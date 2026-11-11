@@ -7,16 +7,25 @@ INSTRUCTIONS = """\
 Tools for drawing and animating pixel art in Aseprite. Sprites are small (16-64 px; a scene with a \
 character needs 128 px or more): work in passes and check each one.
 
-1. Plan: write down the pixel box of each part (head, torso, legs, weapon) first; leave a 1-2 px margin.
-2. Silhouette in one flat color. Use shape tools (draw_line_at, draw_ellipse_at, fill_area_at) for big \
-forms and draw_rows for details: rows of characters plus a colour legend, like ASCII art. Hands, faces, \
+1. Plan: write down the camera (top, side, or three-quarter view) and the light direction first. Then, for \
+each part (head, torso, legs, weapon), write its solid (box, cylinder, dome, plate), its pixel box, the parts \
+it overlaps, and the faces the camera sees; leave a 1-2 px margin. All parts share the one camera: never \
+draw a face that this camera cannot see.
+2. Silhouette: block out all parts in one pass, each in one flat color, before you finish one of them. Shape \
+tools (draw_line_at, draw_ellipse_at, fill_area_at) are for this rough blockout only; then redraw every edge \
+by hand with draw_rows: rows of characters plus a colour legend, like ASCII art. Hands, faces, \
 animals and handles under ~12 px are drawn pixel by pixel with draw_rows, never built from shapes. \
 Clean edges: equal steps on straight diagonals (1-1-1, 2-2-2), gradual steps on curves (1,2,3 not 1,3,1), \
-no L-shaped doubles on 1 px lines, no lone pixels.
-3. Palette before color: one generate_color_ramp (steps=3-4) per material, 8-16 colors in total. \
-Neighbouring materials must differ in lightness, not just hue.
-4. Flats, then shade from one light (top-left): highlight on the lit side, shadow on the far side and \
-under overhangs (chin, arms). Pillow shading (light center, dark ring at the edge) is wrong. \
+no L-shaped doubles on 1 px lines, no lone pixels. Hand-drawn, not formulaic: no tool-perfect circles or \
+rectangles as final parts, no evenly spaced grids of details, and a few details on one side only.
+3. Palette before color: one generate_color_ramp (steps=4-5, hue_shift_degrees=20-40) per material, \
+8-24 colors in total. Neighbouring materials must differ in lightness, not just hue.
+4. Flats, then shade by planes from one light (top-left unless the project says otherwise): each plane \
+gets one ramp step by its angle to the light, and the bands follow the form, not the canvas. Add cast \
+shadows under overhangs (chin, arms), a dark contact line where two parts touch, and a 1 px highlight on \
+the lit edge; a recess is dark on its near wall and lit on its far wall. Pillow shading (light center, \
+dark ring at the edge) is wrong. Then add medium details (panels, seams, folds) before small ones \
+(rivets, glints): a large area of one flat color is unfinished. \
 No dithering or anti-aliasing on sprites under 32 px.
 5. Outline in one dark color (darkest ramp step or near-black), never lighter than the fill \
 (selective outlines only on larger sprites). outline_cel adds 1 px outside the shape (region= for one object).
